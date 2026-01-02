@@ -43,15 +43,22 @@ public class AdminAccountCreator implements CommandLineRunner{
 			log.info("Admin Account Already Exists");
 		}
 		else {
-			User user = new User();
-			user.setActive(true);
-			user.setEmail(adminEmail);
-			user.setMobile(adminMobile);
-			user.setUsername(adminUserName);
-			user.setPassword(passwordEncoder.encode(adminPassword));
-			user.setRole(UserRole.ADIM);
+//			User user = new User();
+//			user.setActive(true);
+//			user.setEmail(adminEmail);
+//			user.setMobile(adminMobile);
+//			user.setUsername(adminUserName);
+//			user.setPassword(passwordEncoder.encode(adminPassword));
+//			user.setRole(UserRole.ADMI);
+			
+			User user = new User(null, adminUserName, adminEmail, passwordEncoder.encode(adminPassword), adminMobile, UserRole.ADMI, true);
+			
+
 			userRespository.save(user);
 			log.info("Admin Account Creation Successfully");
+			
+			
+			
 		}
 	}
 
