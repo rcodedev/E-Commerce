@@ -14,32 +14,31 @@ import com.jsp.ecommerce.entity.User;
 
 import lombok.RequiredArgsConstructor;
 
-
 @RequiredArgsConstructor
 public class CustomUserDetail implements UserDetails {
 
 
-		private final User user;
+	private final User user;
 
-		@Override
-		public Collection<? extends GrantedAuthority> getAuthorities() {
-			List<SimpleGrantedAuthority> list = Arrays.asList(new SimpleGrantedAuthority("ROLE_"+user.getRole().name()));
-			return list;
-		}
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		List<SimpleGrantedAuthority> list = Arrays.asList(new SimpleGrantedAuthority("ROLE_"+user.getRole().name()));
+		return list;
+	}
 
-		@Override
-		public @Nullable String getPassword() {
-			return user.getPassword();
-		}
+	@Override
+	public @Nullable String getPassword() {
+		return user.getPassword();
+	}
 
-		@Override
-		public String getUsername() {
-			return user.getEmail();
-		}
+	@Override
+	public String getUsername() {
+		return user.getEmail();
+	}
 
-		@Override
-		public boolean isEnabled() {
-			return user.isActive();
-		}
+	@Override
+	public boolean isEnabled() {
+		return user.isActive();
+	}
 
 }

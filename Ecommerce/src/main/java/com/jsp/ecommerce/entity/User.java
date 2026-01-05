@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
@@ -29,12 +28,13 @@ public class User {
 	private String email;
 	@Column(nullable = false)
 	private String password;
+	
 	@Column(nullable = false, unique = true)
 	private Long mobile;
+	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private UserRole role;
-	
 	private boolean isActive;
 	
 	
