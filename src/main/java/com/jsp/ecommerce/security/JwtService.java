@@ -10,8 +10,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import com.jsp.ecommerce.exception.GlobalExceptionHandler;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -22,7 +20,7 @@ public class JwtService {
 
 	private final Key key;
 
-	public JwtService(@Value("${jwt.secret}") String secretKey, GlobalExceptionHandler globalExceptionHandler) {
+	public JwtService(@Value("${jwt.secret}") String secretKey) {
 		this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
 	}
 
