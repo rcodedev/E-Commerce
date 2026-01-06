@@ -51,7 +51,7 @@ public class AdminAccountCreator implements CommandLineRunner{
 //			user.setPassword(passwordEncoder.encode(adminPassword));
 //			user.setRole(UserRole.ADMI);
 			
-			User user = new User(null, adminUserName, adminEmail, passwordEncoder.encode(adminPassword), adminMobile, UserRole.ADMI, true);
+			User user = new User(null, adminUserName, adminEmail, passwordEncoder.encode(adminPassword), adminMobile, UserRole.ADMIN, true);
 			
 
 			userRespository.save(user);
