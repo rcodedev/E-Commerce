@@ -13,6 +13,7 @@ import com.jsp.ecommerce.entity.User;
 
 import lombok.RequiredArgsConstructor;
 
+@SuppressWarnings("serial")
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
@@ -20,7 +21,7 @@ public class CustomUserDetails implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		List<SimpleGrantedAuthority> list = Arrays.asList(new SimpleGrantedAuthority("ROLE_"+user.getRole().name()));
+		List<SimpleGrantedAuthority> list = Arrays.asList(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
 		return list;
 	}
 
