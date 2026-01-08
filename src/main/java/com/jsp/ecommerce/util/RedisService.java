@@ -22,5 +22,13 @@ public class RedisService {
 	public void saveTempData(MerchantDto merchantDto, String email) {
 		redisTemplate.opsForValue().set(email+"_merchant", merchantDto,Duration.ofMinutes(30));
 	}
+	
+	public Integer getOtp(String email) {
+		return (Integer) redisTemplate.opsForValue().get(email+"_otp");
+	}
+	
+	public MerchantDto getTempData(String email) {
+		return (MerchantDto) redisTemplate.opsForValue().get(email+"_merchant");
+	}
 
 }
