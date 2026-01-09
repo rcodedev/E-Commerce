@@ -58,6 +58,7 @@ public class JwtService {
 		return extractExpiration(token).before(new Date());
 	}
 
+	@SuppressWarnings("deprecation")
 	private Claims extractAllClaims(String token) {
 		return Jwts.parser().setSigningKey(key).build().parseSignedClaims(token).getPayload();
 	}

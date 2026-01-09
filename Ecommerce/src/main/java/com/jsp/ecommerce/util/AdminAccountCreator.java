@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import com.jsp.ecommerce.EcommerceApplication;
 import com.jsp.ecommerce.Enum.UserRole;
 import com.jsp.ecommerce.entity.User;
 import com.jsp.ecommerce.repository.UserRespository;
@@ -18,8 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class AdminAccountCreator implements CommandLineRunner{
 
-    private final EcommerceApplication ecommerceApplication;
-	
 	private  final UserRespository userRespository;
 	private final PasswordEncoder passwordEncoder;
 	
@@ -43,19 +39,11 @@ public class AdminAccountCreator implements CommandLineRunner{
 			log.info("Admin Account Already Exists");
 		}
 		else {
-//			User user = new User();
-//			user.setActive(true);
-//			user.setEmail(adminEmail);
-//			user.setMobile(adminMobile);
-//			user.setUsername(adminUserName);
-//			user.setPassword(passwordEncoder.encode(adminPassword));
-//			user.setRole(UserRole.ADMI);
-			
-			User user = new User(null, adminUserName, adminEmail, passwordEncoder.encode(adminPassword), adminMobile, UserRole.ADMIN, true);
+			User user = new User(null, adminUserName, adminEmail, passwordEncoder.encode(adminPassword), adminMobile, UserRole.ADIM, true);
 			
 
 			userRespository.save(user);
-			log.info("Admin Account Creation Successfully");
+			log.info("Admin Account Creation Successfully" +adminUserName);
 			
 			
 			

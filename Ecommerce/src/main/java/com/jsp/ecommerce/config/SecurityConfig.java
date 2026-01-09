@@ -23,25 +23,24 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-	private final JwtFilter jwtFilter;
 
-	@Bean
-	PasswordEncoder encoder() {
-		return new BCryptPasswordEncoder();
-	}
+		private final JwtFilter jwtFilter;
 
-	
-	@Bean
-    AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
-	
-	@Bean
-	SecurityFilterChain chain(HttpSecurity httpSecurity) {
-		return httpSecurity
-				.csrf(x->x.disable())
-				.authorizeHttpRequests(x -> x.requestMatchers("/auth/**").permitAll().anyRequest().authenticated())
-				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-				.sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).build();
-	}
+		@Bean
+		PasswordEncoder encoder() {
+			return new BCryptPasswordEncoder();
+		}
+
+		@Bean
+		AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+			return config.getAuthenticationManager();
+		}
+
+		@Bean
+		SecurityFilterChain chain(HttpSecurity http) {
+			return http.csrf(x -> x.disable())
+					.authorizeHttpRequests(x -> x.requestMatchers("/auth/**").permitAll().anyRequest().authenticated())
+					.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+					.sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).build();
+		}
 }

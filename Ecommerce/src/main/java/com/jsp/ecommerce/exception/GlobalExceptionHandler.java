@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
 	public Map<String, Object> handle(BadCredentialsException exception) {
 		return Map.of("error", exception.getMessage());
 	}
-	
+
 	@ExceptionHandler(IllegalArgumentException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public Map<String, Object> handle(IllegalArgumentException exception) {
