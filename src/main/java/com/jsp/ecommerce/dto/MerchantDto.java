@@ -18,5 +18,4 @@ public class MerchantDto {
 	private String address;
 	@NotEmpty(message = "gstNo is Required")
 	private String gstNo;
-
 }
