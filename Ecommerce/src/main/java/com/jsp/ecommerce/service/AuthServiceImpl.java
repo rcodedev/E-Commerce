@@ -18,6 +18,7 @@ import com.jsp.ecommerce.dto.OtpDto;
 import com.jsp.ecommerce.entity.Customer;
 import com.jsp.ecommerce.entity.Merchant;
 import com.jsp.ecommerce.entity.User;
+import com.jsp.ecommerce.mapper.UserMapper;
 import com.jsp.ecommerce.security.JwtService;
 import com.jsp.ecommerce.util.EmailService;
 import com.jsp.ecommerce.util.RedisService;
@@ -35,6 +36,7 @@ public class AuthServiceImpl implements AuthService {
 	private final PasswordEncoder passwordEncoder;
 	private final EmailService emailService;
 	private final RedisService redisService;
+	private final UserMapper userMapper;
 
 	@Override
 	public Map<String, Object> login(String email, String password) {
@@ -47,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public Map<String, Object> viewUser(String email) {
 		User user = userDao.findByEmail(email);
-		return Map.of("message", "Data Found", "user", user);
+		return Map.of("message", "Data Found", "user", userMapper.toUserDto(user));
 	}
 
 	@Override
@@ -56,7 +58,7 @@ public class AuthServiceImpl implements AuthService {
 		if (passwordEncoder.matches(oldPassword, user.getPassword())) {
 			user.setPassword(passwordEncoder.encode(newPassword));
 			userDao.save(user);
-			return Map.of("message", "Password Updated Success", "user", user);
+			return Map.of("message", "Password Updated Success", "user", userMapper.toUserDto(user));
 		}
 		throw new IllegalArgumentException("Old Password Not Matching");
 	}
@@ -91,13 +93,11 @@ public class AuthServiceImpl implements AuthService {
 			if (userDao.checkEmailAndMobieDuplicate(merchantDto.getEmail(), merchantDto.getMobile()))
 				throw new IllegalArgumentException("Already Account Exists with Email or Mobile");
 			
-			User user = new User(null, merchantDto.getName(), merchantDto.getEmail(), passwordEncoder.encode(merchantDto.getPassword()),
-					merchantDto.getMobile(), UserRole.MERCHANT, true);
+			User user=userMapper.toUserEntity(merchantDto);
 			userDao.save(user);
-			Merchant merchant = new Merchant(null, merchantDto.getName(), merchantDto.getAddress(),
-					merchantDto.getGstNo(), user);
+			Merchant merchant = userMapper.toMerchantEntity(merchantDto,user);
 			userDao.save(merchant);
-			return Map.of("message", "Account Created Success", "user", merchant);
+			return Map.of("message", "Account Created Success", "user", userMapper.toMerchantDto(merchant));
 		} else {
 			throw new IllegalArgumentException("Otp Missmatch Try Again");
 		}
