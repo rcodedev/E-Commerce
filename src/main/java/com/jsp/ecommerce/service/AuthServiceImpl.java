@@ -17,7 +17,6 @@ import com.jsp.ecommerce.dto.OtpDto;
 import com.jsp.ecommerce.entity.Customer;
 import com.jsp.ecommerce.entity.Merchant;
 import com.jsp.ecommerce.entity.User;
-import com.jsp.ecommerce.enums.UserRole;
 import com.jsp.ecommerce.mapper.UserMapper;
 import com.jsp.ecommerce.security.JwtService;
 import com.jsp.ecommerce.util.EmailService;
@@ -92,10 +91,10 @@ public class AuthServiceImpl implements AuthService {
 		if (storedOtp.equals(dto.getOtp())) {
 			if (userDao.checkEmailAndMobieDuplicate(merchantDto.getEmail(), merchantDto.getMobile()))
 				throw new IllegalArgumentException("Already Account Exists with Email or Mobile");
-			
-			User user=userMapper.toUserEntity(merchantDto);
+
+			User user = userMapper.toUserEntity(merchantDto);
 			userDao.save(user);
-			Merchant merchant =userMapper.toMerchantEntity(merchantDto,user);
+			Merchant merchant = userMapper.toMerchantEntity(merchantDto, user);
 			userDao.save(merchant);
 			return Map.of("message", "Account Created Success", "user", userMapper.toMerchantDto(merchant));
 		} else {
@@ -117,7 +116,6 @@ public class AuthServiceImpl implements AuthService {
 		return Map.of("message", "OTP Resent Success");
 	}
 
-	
 	@Override
 	public Map<String, Object> registerCustomer(CustomerDto customerDto) {
 		if (userDao.checkEmailAndMobieDuplicate(customerDto.getEmail(), customerDto.getMobile()))
@@ -143,12 +141,11 @@ public class AuthServiceImpl implements AuthService {
 		if (storedOtp.equals(dto.getOtp())) {
 			if (userDao.checkEmailAndMobieDuplicate(customerDto.getEmail(), customerDto.getMobile()))
 				throw new IllegalArgumentException("Already Account Exists with Email or Mobile");
-			User user = new User(null, customerDto.getName(), customerDto.getEmail(), customerDto.getMobile(),
-					passwordEncoder.encode(customerDto.getPassword()), UserRole.USER, true);
+			User user = userMapper.toUserEntity(customerDto);
 			userDao.save(user);
-			Customer customer=new Customer(null, customerDto.getName(), customerDto.getAddress(), user);
+			Customer customer = userMapper.toCustomerEntity(customerDto, user);
 			userDao.save(customer);
-			return Map.of("message", "Account Created Success", "user", customer);
+			return Map.of("message", "Account Created Success", "user", userMapper.toCustomerDto(customer));
 		} else {
 			throw new IllegalArgumentException("Otp Missmatch Try Again");
 		}
@@ -162,7 +159,7 @@ public class AuthServiceImpl implements AuthService {
 			throw new IllegalArgumentException("No Account Exists recreate account");
 		if (userDao.checkEmailAndMobieDuplicate(customerDto.getEmail(), customerDto.getMobile()))
 			throw new IllegalArgumentException("Already Account Exists with Email or Mobile");
-		
+
 		int otp = generateOtp();
 		emailService.sendOtpEmail(otp, customerDto.getName(), customerDto.getEmail());
 		redisService.saveOtp(otp, customerDto.getEmail());

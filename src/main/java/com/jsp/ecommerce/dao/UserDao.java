@@ -55,4 +55,8 @@ public class UserDao {
 			throw new NoSuchElementException("No Customer Records Found");
 		return customers;
 	}
+
+	public User findById(Integer id) {
+		return userRepository.findById(id).orElseThrow(()->new NoSuchElementException("No User with Id: "+id));
+	}
 }
