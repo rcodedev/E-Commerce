@@ -143,12 +143,11 @@ public class AuthServiceImpl implements AuthService {
 		if (storedOtp.equals(dto.getOtp())) {
 			if (userDao.checkEmailAndMobieDuplicate(customerDto.getEmail(), customerDto.getMobile()))
 				throw new IllegalArgumentException("Already Account Exists with Email or Mobile");
-			User user = new User(null, customerDto.getName(), customerDto.getEmail(), passwordEncoder.encode(customerDto.getPassword()),
-					customerDto.getMobile(), UserRole.USER, true);
+			User user = userMapper.toUserEntity(customerDto);
 			userDao.save(user);
-			Customer customer=new Customer(null, customerDto.getName(), customerDto.getAddress(), user);
+			Customer customer=userMapper.toCustomerEntity(customerDto, user);
 			userDao.save(customer);
-			return Map.of("message", "Account Created Success", "user", customer);
+			return Map.of("message", "Account Created Success", "user", userMapper.toCustomerDto(customer));
 		} else {
 			throw new IllegalArgumentException("Otp Missmatch Try Again");
 		}

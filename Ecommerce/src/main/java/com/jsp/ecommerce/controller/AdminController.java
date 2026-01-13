@@ -4,6 +4,8 @@ import java.util.Map;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,6 +32,19 @@ public class AdminController {
 	@PreAuthorize("hasRole('ADMIN')")
 	public Map<String, Object> viewCustomers() {
 		return adminService.getAllCustomers();
+	}
+	
+	
+	@PatchMapping("/block/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public Map<String, Object> blockUser(@PathVariable Integer id) {
+		return adminService.blockUser(id);
+	}
+	
+	@PatchMapping("/unblock/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public Map<String, Object> unblockUser(@PathVariable Integer id) {
+		return adminService.unblockUser(id);
 	}
 
 }
