@@ -2,6 +2,7 @@ package com.jsp.ecommerce.exception;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -82,5 +83,12 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public Map<String, Object> handle(RuntimeException exception) {
 		return Map.of("error", "Something Went Wrong");
+	}
+	
+	
+	@ExceptionHandler(NoSuchElementException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public Map<String, Object> handle(NoSuchElementException exception) {
+		return Map.of("error", exception.getMessage());
 	}
 }

@@ -14,10 +14,8 @@ import com.jsp.ecommerce.entity.Customer;
 import com.jsp.ecommerce.entity.Merchant;
 import com.jsp.ecommerce.entity.User;
 
-
 @Mapper(componentModel = "spring")
 public abstract class UserMapper {
-
 
 	@Autowired
 	PasswordEncoder passwordEncoder;
@@ -31,13 +29,10 @@ public abstract class UserMapper {
 	@Mapping(target = "active", expression = "java(true)")
 	@Mapping(target = "password", expression = "java(passwordEncoder.encode(merchantDto.getPassword()))")
 	public abstract User toUserEntity(MerchantDto merchantDto);
-	
-	
 
 	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "user",source = "user")
+	@Mapping(target = "user", source = "user")
 	public abstract Merchant toMerchantEntity(MerchantDto merchantDto, User user);
-	
 
 	@Mapping(target = "password", constant = "**********")
 	@Mapping(target = "email", expression = "java(merchant.getUser().getEmail())")
@@ -45,8 +40,7 @@ public abstract class UserMapper {
 	@Mapping(target = "id", expression = "java((long)(int)merchant.getUser().getId())")
 	@Mapping(target = "status", expression = "java(merchant.getUser().isActive()?\"Active\":\"BLOCKED\")")
 	public abstract MerchantDto toMerchantDto(Merchant merchant);
-	
-	
+
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "username", source = "name")
 	@Mapping(target = "role", expression = "java(com.jsp.ecommerce.Enum.UserRole.USER)")
