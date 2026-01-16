@@ -29,10 +29,23 @@ public class ProductDao {
 	}
 
 	public Product getProductByIdAndMerchant(Long id, Merchant merchant) {
-		return productRepository.findByIdAndMerchant(id, merchant).orElseThrow(()->new NoSuchElementException("No Product Found with Id: "+id));
+		return productRepository.findByIdAndMerchant(id, merchant)
+				.orElseThrow(() -> new NoSuchElementException("No Product Found with Id: " + id));
 	}
 
 	public void delete(Product product) {
 		productRepository.delete(product);
+	}
+
+	public List<Product> getProducts() {
+		List<Product> products = productRepository.findAll();
+		if (products.isEmpty())
+			throw new NoSuchElementException("No Products found");
+		else
+			return products;
+	}
+
+	public Product getProductById(Long id) {
+		return productRepository.findById(id).orElseThrow(()->new NoSuchElementException("No Product with Id: "+id));
 	}
 }

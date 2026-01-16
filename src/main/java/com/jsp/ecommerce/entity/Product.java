@@ -1,4 +1,4 @@
-package com.jsp.ecommerce.entity;
+ package com.jsp.ecommerce.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,6 +28,7 @@ public class Product {
 	private Integer stock;
 	@Column(nullable = false)
 	private String size;
+	private boolean approved;
 
 	@ManyToOne
 	private Merchant merchant;
