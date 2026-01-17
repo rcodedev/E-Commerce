@@ -29,6 +29,7 @@ public class Product {
 	private Integer stock;
 	@Column(nullable = false)
 	private String size;
+	private boolean approved;
 
 	@ManyToOne
 	private Merchant merchant;

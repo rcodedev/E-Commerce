@@ -36,4 +36,17 @@ public class ProductDao {
 	public void delete(Product product) {
 		productRepository.delete(product);
 	}
+	
+	
+	public List<Product> getProducts() {
+		List<Product> products = productRepository.findAll();
+		if (products.isEmpty())
+			throw new NoSuchElementException("No Products found");
+		else
+			return products;
+	}
+
+	public Product getProductById(Long id) {
+		return productRepository.findById(id).orElseThrow(()->new NoSuchElementException("No Product with Id: "+id));
+	}
 }
