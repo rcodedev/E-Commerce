@@ -23,39 +23,39 @@ public class AdminController {
 	
 	
 	@GetMapping("/merchants")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADIM')")
 	public Map<String, Object> viewMerchants() {
 		return adminService.getAllMerchants();
 	}
 
 	@GetMapping("/customers")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADIM')")
 	public Map<String, Object> viewCustomers() {
 		return adminService.getAllCustomers();
 	}
 	
 	
 	@PatchMapping("/block/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADIM')")
 	public Map<String, Object> blockUser(@PathVariable Integer id) {
 		return adminService.blockUser(id);
 	}
 	
 	@PatchMapping("/unblock/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADIM')")
 	public Map<String, Object> unblockUser(@PathVariable Integer id) {
 		return adminService.unblockUser(id);
 	}
 	
 	
 	@GetMapping("/products")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADIM')")
 	public Map<String, Object> viewProducts() {
 		return adminService.getAllProducts();
 	}
 
 	@PatchMapping("/products/approve/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADIM')")
 	public Map<String, Object> approveProduct(@PathVariable Long id) {
 		return adminService.approveProduct(id);
 	}
