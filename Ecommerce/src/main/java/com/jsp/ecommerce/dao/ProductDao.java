@@ -3,6 +3,8 @@ package com.jsp.ecommerce.dao;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import com.jsp.ecommerce.entity.Merchant;
@@ -48,5 +50,50 @@ public class ProductDao {
 
 	public Product getProductById(Long id) {
 		return productRepository.findById(id).orElseThrow(()->new NoSuchElementException("No Product with Id: "+id));
+	}
+	
+	public List<Product> getAllApprovedProducts(int page, int size, String sort, boolean desc) {
+
+		List<Product> products = productRepository
+				.findByApprovedTrue(
+						PageRequest.of(page - 1, size, desc ? Sort.by(sort).descending() : Sort.by(sort).ascending()))
+				.getContent();
+		if (products.isEmpty())
+			throw new NoSuchElementException("No Products Found");
+		return products;
+	}
+
+	public List<Product> getAllProductByName(String name, int page, int size, String sort, boolean desc) {
+
+		List<Product> products = productRepository
+				.findByApprovedTrueAndNameContaining(name,
+						PageRequest.of(page - 1, size, desc ? Sort.by(sort).descending() : Sort.by(sort).ascending()))
+				.getContent();
+		if (products.isEmpty())
+			throw new NoSuchElementException("No Products Found with Name: " + name);
+		System.out.println(products);
+		return products;
+	}
+
+	public List<Product> getAllProductByCategory(String category, int page, int size, String sort, boolean desc) {
+		List<Product> products = productRepository
+				.findByApprovedTrueAndCategory(category,
+						PageRequest.of(page - 1, size, desc ? Sort.by(sort).descending() : Sort.by(sort).ascending()))
+				.getContent();
+		if (products.isEmpty())
+			throw new NoSuchElementException("No Products Found with Category: " + category);
+		return products;
+	}
+
+	public List<Product> getAllProductByPrice(double lowerRange, double higherRange, int page, int size, String sort,
+			boolean desc) {
+		List<Product> products = productRepository
+				.findByPriceBetweenAndApprovedTrue(lowerRange, higherRange,
+						PageRequest.of(page - 1, size, desc ? Sort.by(sort).descending() : Sort.by(sort).ascending()))
+				.getContent();
+		if (products.isEmpty())
+			throw new NoSuchElementException(
+					"No Products Found within Price range : " + lowerRange + " and " + higherRange);
+		return products;
 	}
 }
