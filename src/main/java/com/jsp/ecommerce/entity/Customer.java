@@ -1,5 +1,6 @@
 package com.jsp.ecommerce.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,4 +26,7 @@ public class Customer {
 
 	@OneToOne
 	private User user;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	Cart cart;
 }
