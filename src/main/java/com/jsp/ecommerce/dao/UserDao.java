@@ -6,8 +6,10 @@ import java.util.NoSuchElementException;
 import org.springframework.stereotype.Repository;
 
 import com.jsp.ecommerce.entity.Customer;
+import com.jsp.ecommerce.entity.CustomerOrder;
 import com.jsp.ecommerce.entity.Merchant;
 import com.jsp.ecommerce.entity.User;
+import com.jsp.ecommerce.repository.CustomerOrderRepository;
 import com.jsp.ecommerce.repository.CustomerRepository;
 import com.jsp.ecommerce.repository.MerchantRepository;
 import com.jsp.ecommerce.repository.UserRepository;
@@ -21,6 +23,7 @@ public class UserDao {
 	private final UserRepository userRepository;
 	private final MerchantRepository merchantRepository;
 	private final CustomerRepository customerRepository;
+	private final CustomerOrderRepository customerOrderRepository;
 
 	public boolean checkEmailAndMobieDuplicate(String email, Long mobile) {
 		return userRepository.existsByEmailOrMobile(email, mobile);
@@ -71,5 +74,13 @@ public class UserDao {
 		User user = findByEmail(email);
 		return customerRepository.findByUser(user)
 				.orElseThrow(() -> new NoSuchElementException("No User with Email: " + email));
+	}
+
+	public void saveOrder(CustomerOrder customerOrder) {
+		customerOrderRepository.save(customerOrder);
+	}
+
+	public CustomerOrder getOrder(Long id) {
+		return customerOrderRepository.findById(id).orElseThrow(()->new NoSuchElementException("No Order Found"));
 	}
 }

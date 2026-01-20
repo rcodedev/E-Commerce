@@ -104,7 +104,11 @@ public class ProductDao {
 	}
 
 	public void deleteItem(Item item) {
-		System.err.println("----------"+item.getId()+"-----------");
 		itemRepository.deleteById(item.getId());
+	}
+
+	public void deleteItems(List<Item> items) {
+		for(Item item:items)
+			deleteItem(item);
 	}
 }

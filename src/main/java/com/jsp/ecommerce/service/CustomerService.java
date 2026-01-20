@@ -13,4 +13,8 @@ public interface CustomerService {
 
 	Map<String, Object> removeFromCart(Long id, String email);
 
+	Map<String, Object> buyFromCart(String email,String address);
+
+	Map<String, Object> confirmPayment(Long id, String razorpay_payment_id);
+
 }
