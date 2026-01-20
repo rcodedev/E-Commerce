@@ -10,7 +10,12 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 
 import com.jsp.ecommerce.dao.ProductDao;
+import com.jsp.ecommerce.dao.UserDao;
+import com.jsp.ecommerce.entity.Cart;
+import com.jsp.ecommerce.entity.Customer;
+import com.jsp.ecommerce.entity.Item;
 import com.jsp.ecommerce.entity.Product;
+import com.jsp.ecommerce.exception.OutOfStockException;
 import com.jsp.ecommerce.mapper.ProductMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -22,27 +27,127 @@ public class CustomerServiceImpl implements CustomerService {
 
 	private final ProductDao productDao;
 	private final ProductMapper productMapper;
+	private final UserDao userDao;
 
 	@Override
 	public Map<String, Object> getProducts(int page, int size, String sort, boolean desc, String name, String category,
 			String lowerRange, String higherRange) {
-		List<Product> products=new ArrayList<Product>();
-		if(name==null && category==null && lowerRange==null && higherRange==null) {
-			products=productDao.getAllApprovedProducts(page,size,sort,desc);
-		}else {
-			Set<Product> set=new HashSet<Product>();
-			if(name!=null)
-				set.addAll(productDao.getAllProductByName(name,page,size,sort,desc));
-			if(category!=null)
+		List<Product> products = new ArrayList<Product>();
+		if (name == null && category == null && lowerRange == null && higherRange == null) {
+			products = productDao.getAllApprovedProducts(page, size, sort, desc);
+		} else {
+			Set<Product> set = new HashSet<Product>();
+			if (name != null)
+				set.addAll(productDao.getAllProductByName(name, page, size, sort, desc));
+			if (category != null)
 				set.addAll(productDao.getAllProductByCategory(category, page, size, sort, desc));
-			if(lowerRange!=null && higherRange!=null)
-				set.addAll(productDao.getAllProductByPrice(Double.parseDouble(lowerRange), Double.parseDouble(higherRange), page, size, sort, desc));
-		
+			if (lowerRange != null && higherRange != null)
+				set.addAll(productDao.getAllProductByPrice(Double.parseDouble(lowerRange),
+						Double.parseDouble(higherRange), page, size, sort, desc));
+
 			products.addAll(set);
 		}
-		if(products==null)
+		if(products == null)
 			throw new NoSuchElementException("No Products Found .");
-		return Map.of("message","Products Found","products",productMapper.toProductDtoList(products));
+		return Map.of("message", "Products Found", "products", productMapper.toProductDtoList(products));
+	}
+	
+	
+
+	@Override
+	public Map<String, Object> addToCart(Long id, String email, String size) {
+		Product product = productDao.getProductById(id);
+		Customer customer = userDao.findCustomerByEmail(email);
+		if (product.getStock() <= 0)
+			throw new OutOfStockException(product.getName() + " is Out of Stock");
+		if (!product.getSize().contains(size))
+			throw new OutOfStockException(size + " is Out of Stock");
+		Cart cart = customer.getCart();
+		if (cart == null) {
+			cart = new Cart();
+			customer.setCart(cart);
+		}
+		List<Item> items = cart.getItems();
+		if (items == null) {
+			items = new ArrayList<Item>();
+			cart.setItems(items);
+		}
+
+		if (items.isEmpty()) {
+			Item item = new Item();
+			item.setProduct(product);
+			item.setQuantity(1);
+			item.setSize(size);
+			items.add(item);
+		} else {
+			boolean flag = true;
+			for (Item item : items) {
+				if (item.getProduct().getId() == product.getId()) {
+					item.setQuantity(item.getQuantity() + 1);
+					item.setSize(size);
+					flag = false;
+					break;
+				}
+			}
+			if (flag) {
+				Item item = new Item();
+				item.setProduct(product);
+				item.setQuantity(1);
+				item.setSize(size);
+				items.add(item);
+			}
+		}
+		product.setStock(product.getStock() - 1);
+		productDao.save(product);
+		userDao.save(customer);
+		return Map.of("message", product.getName() + " added to Cart Success", "product",
+				productMapper.toProductDto(product));
+	}
+
+	@Override
+	public Map<String, Object> viewCart(String email) {
+		Customer customer = userDao.findCustomerByEmail(email);
+		Cart cart = customer.getCart();
+		if (cart == null)
+			throw new NoSuchElementException("No Items in Cart");
+		List<Item> items = cart.getItems();
+		if (items.isEmpty())
+			throw new NoSuchElementException("No Items in Cart");
+		return Map.of("message", "Cart Found Success", "items", productMapper.toItemsDtoList(items));
+	}
+
+	@Override
+	public Map<String, Object> removeFromCart(Long id, String email) {
+		Customer customer = userDao.findCustomerByEmail(email);
+		Product product = productDao.getProductById(id);
+
+		Cart cart = customer.getCart();
+		if (cart == null)
+			throw new NoSuchElementException(product.getName() + " is Not in Cart");
+		List<Item> items = cart.getItems();
+		if (items.isEmpty())
+			throw new NoSuchElementException(product.getName() + " is Not in Cart");
+		boolean flag = false;
+
+		for (Item item : items) {
+			if (item.getProduct().getId() == id) {
+				if (item.getQuantity() > 1) {
+					item.setQuantity(item.getQuantity() - 1);
+					productDao.saveItem(item);
+				} else {
+					items.remove(item);
+					userDao.save(customer);
+					productDao.deleteItem(item);
+				}
+				flag = true;
+				break;
+			}
+		}
+		if (!flag)
+			throw new NoSuchElementException(product.getName() + " is Not in Cart");
+		product.setStock(product.getStock() + 1);
+		productDao.save(product);
+		return Map.of("message", "Product Removed From cart Success", "product", productMapper.toProductDto(product));
 	}
 
 }

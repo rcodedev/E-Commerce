@@ -11,6 +11,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -27,6 +28,14 @@ public class GlobalExceptionHandler {
 		return Map.of("error", exception.getMessage());
 	}
 
+	
+	@ExceptionHandler(OutOfStockException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public Map<String, Object> handle(OutOfStockException exception) {
+		return Map.of("error", exception.getMessage());
+	}
+	
+	
 	@ExceptionHandler(IllegalArgumentException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public Map<String, Object> handle(IllegalArgumentException exception) {
@@ -89,6 +98,12 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(NoSuchElementException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public Map<String, Object> handle(NoSuchElementException exception) {
+		return Map.of("error", exception.getMessage());
+	}
+	
+	@ExceptionHandler(MissingServletRequestParameterException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public Map<String, Object> handle(MissingServletRequestParameterException exception) {
 		return Map.of("error", exception.getMessage());
 	}
 }

@@ -69,4 +69,10 @@ public class UserDao {
 		return merchantRepository.findByUser(user)
 				.orElseThrow(() -> new NoSuchElementException("No User with Email: " + email));
 	}
+	
+	public Customer findCustomerByEmail(String email) {
+		User user = findByEmail(email);
+		return customerRepository.findByUser(user)
+				.orElseThrow(() -> new NoSuchElementException("No User with Email: " + email));
+	}
 }

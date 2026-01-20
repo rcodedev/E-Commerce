@@ -3,7 +3,10 @@ package com.jsp.ecommerce.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.jsp.ecommerce.entity.Cart;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -27,4 +30,6 @@ public class CustomerDto {
 	@JsonProperty(access = Access.READ_ONLY)
 	private String status;
 
+	@OneToOne(cascade = CascadeType.ALL)
+	Cart cart;
 }
