@@ -23,5 +23,15 @@
     "name": "admin.mobile",
     "type": "java.lang.String",
     "description": "A description for 'admin.mobile'"
+  },
+  {
+    "name": "razaorpay.key",
+    "type": "java.lang.String",
+    "description": "A description for 'razaorpay.key'"
+  },
+  {
+    "name": "razaorpay.secret",
+    "type": "java.lang.String",
+    "description": "A description for 'razaorpay.secret'"
   }
 ]}

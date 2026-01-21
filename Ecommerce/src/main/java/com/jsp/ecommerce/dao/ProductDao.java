@@ -108,4 +108,9 @@ public class ProductDao {
 	public void deleteItem(Item item) {
 		itemRepository.deleteById(item.getId());
 	}
+	
+	public void deleteItems(List<Item> items) {
+		for(Item item:items)
+			deleteItem(item);
+	}
 }

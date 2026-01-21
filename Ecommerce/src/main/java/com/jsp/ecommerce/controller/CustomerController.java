@@ -54,4 +54,17 @@ public class CustomerController {
 	public Map<String, Object> removeFromCart(@PathVariable Long id, Principal principal) {
 		return customerService.removeFromCart(id, principal.getName());
 	}
+	
+
+	@PostMapping("/cart/buy")
+	@PreAuthorize("hasRole('CUSTOMER')")
+	@ResponseStatus(HttpStatus.CREATED)
+	public Map<String, Object> buyFromCart(Principal principal, @RequestParam String address) {
+		return customerService.buyFromCart(principal.getName(), address);
+	}
+	
+	@PostMapping("/confirm-payment/{id}")
+	public Map<String, Object> confirmPayment(@PathVariable Long id,@RequestParam String razorpay_payment_id){
+		return customerService.confirmPayment(id,razorpay_payment_id);
+	}
 }

@@ -7,16 +7,23 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.jsp.ecommerce.dao.ProductDao;
 import com.jsp.ecommerce.dao.UserDao;
+import com.jsp.ecommerce.dto.PaymentDto;
 import com.jsp.ecommerce.entity.Cart;
 import com.jsp.ecommerce.entity.Customer;
+import com.jsp.ecommerce.entity.CustomerOrder;
 import com.jsp.ecommerce.entity.Item;
 import com.jsp.ecommerce.entity.Product;
 import com.jsp.ecommerce.exception.OutOfStockException;
 import com.jsp.ecommerce.mapper.ProductMapper;
+import com.razorpay.Order;
+import com.razorpay.RazorpayClient;
+import com.razorpay.RazorpayException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +35,10 @@ public class CustomerServiceImpl implements CustomerService {
 	private final ProductDao productDao;
 	private final ProductMapper productMapper;
 	private final UserDao userDao;
+	@Value("${razaorpay.key}")
+	private String razorPayKey;
+	@Value("${razaorpay.secret}")
+	private String razorPaySecret;
 
 	@Override
 	public Map<String, Object> getProducts(int page, int size, String sort, boolean desc, String name, String category,
@@ -148,6 +159,72 @@ public class CustomerServiceImpl implements CustomerService {
 		product.setStock(product.getStock() + 1);
 		productDao.save(product);
 		return Map.of("message", "Product Removed From cart Success", "product", productMapper.toProductDto(product));
+	}
+	
+	
+	
+	@Override
+	public Map<String, Object> buyFromCart(String email, String address) {
+		Customer customer = userDao.findCustomerByEmail(email);
+		Cart cart = customer.getCart();
+		if (cart == null)
+			throw new NoSuchElementException("No Items in Cart");
+		List<Item> items = cart.getItems();
+		if (items.isEmpty())
+			throw new NoSuchElementException("No Items in Cart");
+
+		double amount = items.stream().mapToDouble(x -> x.getQuantity() * x.getProduct().getPrice()).sum();
+		String orderId = null;
+		try {
+			RazorpayClient client = new RazorpayClient(razorPayKey, razorPaySecret);
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("amount", amount * 100);
+			jsonObject.put("currency", "INR");
+
+			Order order = client.orders.create(jsonObject);
+			orderId = order.get("id");
+
+		} catch (RazorpayException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Something Went Wrong");
+		}
+
+		CustomerOrder customerOrder = new CustomerOrder();
+		customerOrder.setAdrress(address);
+		customerOrder.setAmount(amount);
+		customerOrder.setCustomer(customer);
+
+		List<Item> orderItems = new ArrayList<Item>();
+		for (Item item : items) {
+			Item item2 = new Item();
+			item2.setProduct(item.getProduct());
+			item2.setQuantity(item.getQuantity());
+			item2.setSize(item.getSize());
+			orderItems.add(item2);
+		}
+		customerOrder.setItems(orderItems);
+		customerOrder.setOrderId(orderId);
+
+		userDao.saveOrder(customerOrder);
+
+		PaymentDto paymentDto = new PaymentDto(razorPayKey, amount * 100, "INR", orderId, customer.getName(), email,
+				customer.getUser().getMobile(), "/customers/confirm-payment/" + customerOrder.getId());
+
+		return Map.of("message", "Order Created Success Make Payment to Place Order", "order", paymentDto);
+	}
+
+	@Override
+	public Map<String, Object> confirmPayment(Long id, String razorpay_payment_id) {
+		CustomerOrder order = userDao.getOrder(id);
+		order.setPaymentId(razorpay_payment_id);
+		order.setPaymentStatus(true);
+		userDao.saveOrder(order);
+		Customer customer = order.getCustomer();
+		List<Item> items = customer.getCart().getItems();
+		customer.getCart().setItems(new ArrayList<Item>());
+		userDao.save(customer);
+		productDao.deleteItems(items);
+		return Map.of("message", "Payment Success Order Placed", "order", order);
 	}
 
 }
