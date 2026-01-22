@@ -190,7 +190,7 @@ public class CustomerServiceImpl implements CustomerService {
 		}
 
 		CustomerOrder customerOrder = new CustomerOrder();
-		customerOrder.setAdrress(address);
+		customerOrder.setAddress(address);
 		customerOrder.setAmount(amount);
 		customerOrder.setCustomer(customer);
 
@@ -224,7 +224,14 @@ public class CustomerServiceImpl implements CustomerService {
 		customer.getCart().setItems(new ArrayList<Item>());
 		userDao.save(customer);
 		productDao.deleteItems(items);
-		return Map.of("message", "Payment Success Order Placed", "order", order);
+		return Map.of("message", "Payment Success Order Placed", "order", productMapper.toOrderDto(order));
 	}
-
+	
+	@Override
+	public Map<String, Object> getAllOrders(String email) {
+		Customer customer = userDao.findCustomerByEmail(email);
+		
+		List<CustomerOrder> orders=userDao.getAllOrders(customer);
+		return Map.of("message","Orders Found","orders",productMapper.toOrderDtos(orders));
+	}
 }

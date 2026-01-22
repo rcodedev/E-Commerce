@@ -89,4 +89,12 @@ public class UserDao {
 	public CustomerOrder getOrder(Long id) {
 		return customerOrderRepository.findById(id).orElseThrow(()->new NoSuchElementException("No Order Found"));
 	}
+	
+	
+	public List<CustomerOrder> getAllOrders(Customer customer) {
+		List<CustomerOrder> orders=customerOrderRepository.findByCustomer(customer);
+		if(orders.isEmpty())
+			throw new NoSuchElementException("No Orders Found");
+		return orders;
+	}
 }

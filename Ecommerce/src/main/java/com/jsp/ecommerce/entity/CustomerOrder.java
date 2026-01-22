@@ -20,7 +20,7 @@ public class CustomerOrder {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private Double amount;
-	private String adrress;
+	private String address;
 	private boolean paymentStatus;
 
 	private String orderId;

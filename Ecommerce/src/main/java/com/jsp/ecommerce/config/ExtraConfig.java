@@ -7,6 +7,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class ExtraConfig {
@@ -22,5 +23,10 @@ public class ExtraConfig {
 		template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
 		template.afterPropertiesSet();
 		return template;
+	}
+	
+	@Bean
+	RestTemplate restTemplate() {
+		return new RestTemplate();
 	}
 }

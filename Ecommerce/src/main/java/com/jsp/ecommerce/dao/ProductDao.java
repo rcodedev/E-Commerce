@@ -113,4 +113,9 @@ public class ProductDao {
 		for(Item item:items)
 			deleteItem(item);
 	}
+	
+	
+	public void saveAll(List<Product> products) {
+		productRepository.saveAll(products);
+	}
 }
