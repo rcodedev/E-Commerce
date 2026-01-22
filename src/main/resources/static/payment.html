@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <button id="rzp-button1">Pay with Razorpay</button>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+var options = {
+    "key": "rzp_test_RaPsJq0rZSFWD1", // Enter the Key ID generated from the Dashboard
+    "amount": "16594", // Amount is in currency subunits. 
+    "currency": "INR",
+    "name": "ecommerce",
+    "description": "Test Transaction",
+    "image": "https://example.com/your_logo",
+    "order_id": "order_S6u6bHqTxd4USP", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "callback_url": "/customers/confirm-payment/1",
+    "prefill": {
+        "name": "Vishwas",
+        "email": "vishu@jsp.com",
+        "contact": "7458963210"
+    },
+    "notes": {
+        "address": "Razorpay Corporate Office"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+var rzp1 = new Razorpay(options);
+document.getElementById('rzp-button1').onclick = function(e){
+    rzp1.open();
+    e.preventDefault();
+}
+</script>
+</body>
+</html>
