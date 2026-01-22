@@ -34,6 +34,13 @@ public class MerchantController {
 	public Map<String, Object> addProduct(@RequestBody @Valid ProductDto productDto, Principal principal) {
 		return merchantService.saveProduct(productDto, principal.getName());
 	}
+	
+	@PostMapping("/add-extras")
+	@PreAuthorize("hasRole('MERCHANT')")
+	@ResponseStatus(HttpStatus.CREATED)
+	public Map<String, Object> addProducts(Principal principal) {
+		return merchantService.addProducts(principal.getName());
+	}
 
 	@GetMapping("/products")
 	@PreAuthorize("hasRole('MERCHANT')")

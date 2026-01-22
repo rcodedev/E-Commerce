@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -59,6 +61,12 @@ public class GlobalExceptionHandler {
 	public Map<String, Object> handle(AccessDeniedException exception) {
 		return Map.of("error", "You are Not Allowed to Access This Endpoint");
 	}
+	
+	@ExceptionHandler(InternalAuthenticationServiceException.class)
+	@ResponseStatus(HttpStatus.FORBIDDEN)
+	public Map<String, Object> handle(InternalAuthenticationServiceException exception) {
+		return Map.of("error", "Invalid Email");
+	}
 
 	@ExceptionHandler(NoResourceFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
@@ -76,6 +84,12 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.FORBIDDEN)
 	public Map<String, Object> handle(ExpiredJwtException exception) {
 		return Map.of("error", "Token Expired Login Again");
+	}
+	
+	@ExceptionHandler(DisabledException.class)
+	@ResponseStatus(HttpStatus.FORBIDDEN)
+	public Map<String, Object> handle(DisabledException exception) {
+		return Map.of("error", "Account is Blocked Contact Admin");
 	}
 
 	@ExceptionHandler(HttpMessageNotReadableException.class)
