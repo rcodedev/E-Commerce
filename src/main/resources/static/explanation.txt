@@ -1,0 +1,102 @@
+Resume
+-----------
+E-Commerce REST API Project | Spring Boot
+
+Developed a scalable E-Commerce REST API using Spring Boot and Spring Security with JWT-based authentication and role-based access control for Admin, Merchant, and Customer modules. Implemented secure login and authorization using @PreAuthorize. Admin functionalities include managing merchants and customers, blocking/unblocking users, and approving products. Merchants can perform full CRUD operations on products. Customers can register with email verification using OTP stored in Redis and sent asynchronously, view approved products, manage cart, place orders, and complete payments via Razorpay integration. Currently learning React to build a complete end-to-end application.
+
+
+
+In Self Intro
+------------------
+I recently built an e-commerce backend application using Spring Boot and Spring Security.
+It has role-based authentication with JWT for Admin, Merchant, and Customer roles.
+I implemented features like product management, email verification, cart and order flow, and Razorpay payment integration.
+Currently, I’m learning React and planning to build the frontend to make it a complete end-to-end application.
+
+depth
+--------
+🔹 Project Overview
+
+“This project is a backend e-commerce REST API developed using Spring Boot.
+The main focus was security, scalability, and clean role separation using Spring Security and JWT.”
+
+🔹 Architecture & Modules
+
+“The application has three main modules: Admin, Merchant, and Customer.”
+
+🔸 Admin Module
+
+Admin account is created using CommandLineRunner
+
+Admin can:
+
+Login and update password
+
+View all merchants and customers
+
+Block or unblock merchants/customers
+
+View and approve products added by merchants
+
+“Admin controls overall platform integrity.”
+
+🔸 Merchant Module
+
+Merchant can:
+
+Login and update password
+
+Perform CRUD operations on products
+
+Products require admin approval before becoming visible to customers
+
+“This ensures quality control of products.”
+
+🔸 Customer Module
+
+Customer features:
+
+Registration with email verification using OTP
+
+OTP is stored in Redis
+
+Email sending is handled asynchronously
+
+Can view only admin-approved products
+
+Add products to cart, view cart, remove items
+
+Place orders and make payments via Razorpay API
+
+View order history
+
+🔹 Security Implementation
+
+“I used Spring Security with JWT for stateless authentication.
+Role-based access is enforced using @PreAuthorize annotations, ensuring that each role can access only its permitted APIs.”
+
+🔹 Technologies Used
+
+Spring Boot
+
+Spring Security
+
+JWT Authentication
+
+Redis (OTP storage)
+
+Async processing (Email sender)
+
+Razorpay Payment Gateway
+
+REST APIs
+
+🔹 Future Enhancement
+
+“Currently, the project is backend-only. I’m learning React, and once completed, I plan to build the frontend and make it a full end-to-end e-commerce application.”
+
+
+explanation
+------------
+
+This project is a backend e-commerce REST API developed using Spring Boot with a strong focus on security, scalability, and clean role separation using Spring Security and JWT. The application is divided into three modules: Admin, Merchant, and Customer. The Admin account is created using CommandLineRunner and can log in, update passwords, manage merchants and customers, block or unblock users, and approve products added by merchants, ensuring overall platform integrity. Merchants can log in, update their credentials, and perform full CRUD operations on products, which become visible to customers only after admin approval to maintain quality control. Customers can register with email verification using OTP stored in Redis and sent asynchronously, view only approved products, manage cart operations, place orders, make payments through Razorpay integration, and view order history. The application uses stateless JWT-based authentication with role-based access enforced through @PreAuthorize annotations. Currently, the project is backend-only, and I am learning React to build the frontend and make it a complete end-to-end e-commerce application.

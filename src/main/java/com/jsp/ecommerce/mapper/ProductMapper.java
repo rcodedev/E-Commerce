@@ -44,7 +44,8 @@ public interface ProductMapper {
 	@Mapping(target = "size", constant = "FREE")
 	@Mapping(target = "stock", constant = "20")
 	Product toProductEntity(FakeStoreData data, Merchant merchant);
-
+	
+	
 	OrderDto toOrderDto(CustomerOrder order);
 
 	List<OrderDto> toOrderDtos(List<CustomerOrder> orders);
